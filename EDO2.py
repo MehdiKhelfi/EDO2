@@ -7,11 +7,10 @@ from PIL import ImageTk, Image
 
 class Application:
     def __init__(self):
-        F1=tk.Frame(fenetre)
         self.l = tk.Label(fenetre, text="Entrez les deux fonctions (notation python) : ")
         self.equationimg = ImageTk.PhotoImage(Image.new('1', (0, 0)))
         self.resultat = tk.Label(fenetre, image = self.equationimg)
-        self.resultat.grid(row=4, column=1)
+        self.resultat.grid(row=3, column=1)
         self.f1 = tk.Entry(fenetre, textvariable=tk.StringVar())
         self.f1.insert(0, "exp(x*2)")
         self.f2 = tk.Entry(fenetre, textvariable=tk.StringVar())
@@ -19,8 +18,8 @@ class Application:
         self.b = tk.Button(text="Générer !", command=self.resoudre)
         self.l.grid(row=1, column=1)
         self.f1.grid(row=2, column=1)
-        self.f2.grid(row=3, column=1)
-        self.b.grid(row=3, column=2)
+        self.f2.grid(row=2, column=2)
+        self.b.grid(row=2, column=3)
     def resoudre(self):
         self.equation = equadiff([self.f1.get(), self.f2.get()])
         preview(self.equation, viewer='file', filename="out.png", dvioptions=['-D','100'], euler=False,)
@@ -44,12 +43,15 @@ def equadiff(F):
     eq = M.det()
     coefs = []
     for i in range(ordre+1):
-        coefs.append(factor(collect(eq, y[i]).coeff(y[i])))
+        coefs.append(simplify(collect(expand(eq), y[i]).coeff(y[i])))
+    for i in range(ordre+1):
+        coefs[i] = coefs[i]/coefs[2]
+        coefs[i] = simplify(coefs[i])
     eq = Add(*[y[i] * coefs[i] for i in range(ordre+1)])
     return Eq(eq, 0)
 
 fenetre = tk.Tk()
-fenetre.geometry("600x450")
+fenetre.geometry("800x450")
 fenetre.title("EDO2")
 App = Application()
 fenetre.mainloop()
