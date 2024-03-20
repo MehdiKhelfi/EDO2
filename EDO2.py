@@ -47,7 +47,9 @@ def equadiff(F):
     for i in range(ordre+1):
         coefs[i] = coefs[i]/coefs[2]
         coefs[i] = simplify(coefs[i])
-    eq = Add(*[y[i] * coefs[i] for i in range(ordre+1)])
+    eq = y[2]
+    for i in range(ordre-1, -1, -1):
+        eq += Mul(y[i], coefs[i], evaluate=False)
     return Eq(eq, 0)
 
 fenetre = tk.Tk()
